@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:p = "http://www.springframework.org/schema/p"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context ="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       https://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/spring-context-3.0.xsd">
 
-    <!-- Inner Classes as Property and Constructor-->
-    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist"
-        p:song = "JINGLE BELLS"
-          p:instrument-ref="saxophone" />
-
-    <bean id="saxophone" class="com.springinaction.springidol.SaxoPhone" />
+    <context:component-scan
+            base-package="com.springinaction.springidol">
+        <context:include-filter type="assignable" expression="com.springinaction.springidol.Instrument"/>
+    </context:component-scan>
 
 
 </beans>
