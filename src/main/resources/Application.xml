@@ -1,19 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:context ="http://www.springframework.org/schema/context"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/util
-       https://www.springframework.org/schema/util/spring-util.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/spring-context-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans"
+       "http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <context:component-scan
-            base-package="com.springinaction.springidol">
-        <context:include-filter type="assignable" expression="com.springinaction.springidol.Instrument"/>
-    </context:component-scan>
+    
+    <!--Constructor Injection
+       Poetic Joker beans-->
+    <bean id="poeticDuke" class="com.springinaction.springidol.PoeticJuggler">
+        <constructor-arg value="15"/>
+        <constructor-arg ref="sonnnet29"/>
+    </bean>
 
+    
+    <!-- Singleton class for only one instance -->
+    <bean id="theStage" class="com.springinaction.springidol.Stage"
+          factory-method="getInstance" />
+
+    <!-- Initialisation and destroy the beans
+        Auditorium lights beans -->
+    <bean id="auditorium" class="com.springinaction.springidol.Auditorium"
+          init-method="turnOnLights"
+          destroy-method="turnOffLights"/>
+
+    <!-- Setter Injection
+        Instrumentalist Kenny -->
+    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist"/>
+
+    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist">
+        <property name="song" value="Jingle Bells"/>
+    </bean>
+
+    <!-- Setter injection of SaxoPhone instrument -->
+    <bean id="kenny2" class="com.springinaction.springidol.Instrumentalist">
+        <property name="song" value="Jingle Bells" />
+        <property name="instrument" ref="saxophone" />
+    </bean>
+
+    <bean id="saxophone" class="com.springinaction.springidol.SaxoPhone" />
+
+    <!-- Playing Piano -->
+    <bean id="piano" class="com.springinaction.springidol.Piano" />
+
+
+     <!-- Inner Classes as Property and Constructor-->
+    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist">
+        <property name="song" value="Jingle Bells" />
+        <property name="instrument" >
+            <bean id="saxophone" class="com.springinaction.springidol.SaxoPhone" />
+        </property>
+    </bean>
+
+    <bean id="poeticDuke" class="com.springinaction.springidol.PoeticJuggler">
+        <constructor-arg value="15"/>
+        <constructor-arg>
+            <bean id="sonnnet29" class="com.springinaction.springidol.Sonnet29"/>
+        </constructor-arg>
+    </bean>
+
+
+     <!-- p namespace -->
+    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist"
+        p:song = "JINGLE BELLS"
+          p:instrument-ref="saxophone" />
+
+    <bean id="saxophone" class="com.springinaction.springidol.SaxoPhone" />
+
+    <!-- Collection Implementation
+    <list> configuration  -->
+    <bean id="hank" class="com.springinaction.springidol.OneManBand">
+        <property name="instruments">
+            <list>
+                <ref bean="guitar"/>
+                <ref bean="cymbal"/>
+                <ref bean="harmonica"/>
+            </list>
+        </property>
+    </bean>
+    <!--Writing <set> collections -->
+    <bean id="hank" class="com.springinaction.springidol.OneManBand">
+        <property name="instruments">
+            <set>
+                <ref bean="guitar"/>
+                <ref bean="cymbal"/>
+                <ref bean="harmonica"/>
+                <ref bean="harmonica"/>
+            </set>
+        </property>
+    </bean>
+
+    <!-- Writing <map> Collection -->
+    <bean id="hank" class="com.springinaction.springidol.OneManBand">
+        <property name="instruments">
+            <map>
+                <entry key="GUITAR" value-ref="guitar"/>
+                <entry key="CyMBAL" value-ref="cymbal"/>
+                <entry key="HARMONICA" value-ref="harmonica"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Writing <prop> Collection -->
+    <bean id="hank" class="com.springinaction.springidol.OneManBand">
+        <property name="instruments">
+            <props>
+                <prop key="GUITAR">STRUM STRUM STRUM</prop>
+                <prop key="CYMBAL">CRASH CRASH CRASH</prop>
+                <prop key="HARMONICA">HUM HUM HUM</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <!-- Auto Wiring By Name -->
+    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist"
+          autowire="byName">
+        <property name="song" value="Jingles Bells"/>
+    </bean>
+
+    <bean id="instrument" class="com.springinaction.springidol.SaxoPhone"/>
+
+
+    <!-- Auto Wiring by Type -->
+    <bean id="kenny" class="com.springinaction.springidol.Instrumentalist"
+          autowire="byType">
+        <property name="song" value="Jingles Bells"/>
+    </bean>
+
+    <bean id="instrument" class="com.springinaction.springidol.SaxoPhone" primary="false"/>
+
+    <!-- Auto Wiring by Constructor -->
+   <bean id="duke" class="com.springinaction.springidol.PoeticJuggler"
+         autowire="constructor"/>
+
+    <bean id="soneet29" class="com.springinaction.springidol.Sonnet29"/>
+
+    <!-- Auto Wiring by AutoDetect -->
+    <bean id="duke" class="com.springinaction.springidol.PoeticJuggler"
+          autowire=autodetect"/>
+    <bean id="soneet29" class="com.springinaction.springidol.Sonnet29"/>
+
+       <!--Mixing auto with explicit wiring-->
+    <bean id="kenny"
+          class="com.springinaction.springidol.Instrumentalist"
+          autowire="byType">
+        <property name="song" value="Jingle Bells" />
+        <property name="instrument" ref="saxophone" />
+    </bean>
+    <bean id="saxophone" class="com.springinaction.springidol.SaxoPhone"/>
+
+    <!-- by wiring instrument to null-->
+    <bean id="kenny"
+          class="com.springinaction.springidol.Instrumentalist"
+          autowire="byType">
+        <property name="song" value="Jingle Bells" />
+        <property name="instrument"><null/></property>
+    </bean>
 
 </beans>
